@@ -25,10 +25,10 @@ sampler.getArguments().each {arg ->
 }
 
 //Create the variable x-amz-date 
+TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 def now = new Date()
 def amzFormat = new SimpleDateFormat( "yyyyMMdd'T'HHmmss'Z'" )
 def stampFormat = new SimpleDateFormat( "yyyyMMdd" )
-amzFormat.setTimeZone(TimeZone.getTimeZone("UTC"));  //server timezone
 def amzDate = amzFormat.format(now)
 def dateStamp = stampFormat.format(now)
 vars.put("x_amz_date", amzDate)
@@ -126,4 +126,3 @@ public static String urlEncodeUTF8(Map<?,?> map) {
     }
     return sb.toString();       
 }
- 
