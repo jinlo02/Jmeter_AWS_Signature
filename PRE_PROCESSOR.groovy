@@ -29,6 +29,7 @@ def now = new Date()
 def amzFormat = new SimpleDateFormat( "yyyyMMdd'T'HHmmss'Z'" )
 def stampFormat = new SimpleDateFormat( "yyyyMMdd" )
 amzFormat.setTimeZone(TimeZone.getTimeZone("UTC"));  //server timezone
+stampFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 def amzDate = amzFormat.format(now)
 def dateStamp = stampFormat.format(now)
 vars.put("x_amz_date", amzDate)
