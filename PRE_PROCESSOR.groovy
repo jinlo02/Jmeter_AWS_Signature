@@ -18,17 +18,18 @@ def method = sampler.getMethod()
 def url = sampler.getUrl()
 def req_path = url.getPath()
 def req_query_string = orderQuery(url)
-def request_parameters = '';
+def request_parameters = ''
 
-sampler.getArguments().each {arg ->
+/* sampler.getArguments().each {arg ->
     request_parameters = arg.getStringValue().substring(1)
-}
+} */
 
 //Create the variable x-amz-date 
 def now = new Date()
 def amzFormat = new SimpleDateFormat( "yyyyMMdd'T'HHmmss'Z'" )
 def stampFormat = new SimpleDateFormat( "yyyyMMdd" )
 amzFormat.setTimeZone(TimeZone.getTimeZone("UTC"));  //server timezone
+stampFormat.setTimeZone(TimeZone.getTimeZone("UTC"))
 def amzDate = amzFormat.format(now)
 def dateStamp = stampFormat.format(now)
 vars.put("x_amz_date", amzDate)
@@ -37,16 +38,16 @@ vars.put("x_amz_date", amzDate)
 //Create a Canonical Request
 def canonical_uri = req_path
 def canonical_querystring = req_query_string
-def canonical_headers = "host:" + host + "\n" + "x-amz-date:" + amzDate + "\n"
-def signed_headers = "host;x-amz-date"
 def payload_hash = getHexDigest(request_parameters)
+def canonical_headers = "host:" + host + "\n" + "x-amz-date:" + payload_hash + "\n" + amzDate + "\n"
+def signed_headers = "host;x-amz-date"
 def canonical_request = method + "\n" + canonical_uri + "\n" + canonical_querystring + "\n" + canonical_headers + "\n" + signed_headers + "\n" + payload_hash
 
 
 //Create the String to Sign
 def algorithm = "AWS4-HMAC-SHA256"
 def credential_scope = dateStamp + "/" + region + "/" + service + "/" + "aws4_request"
-def hash_canonical_request = getHexDigest(canonical_request)
+def hash_canonical_request = "UNSIGNED-PAYLOAD"
 def string_to_sign = algorithm + "\n" +  amzDate + "\n" +  credential_scope + "\n" +  hash_canonical_request
 
 //Calculate the String to Sign
